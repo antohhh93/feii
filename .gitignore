@@ -1,0 +1,14 @@
+.vscode
+.idea/
+.history
+.pypirc
+*.DS_Store
+__pycache__
+__init__.pyc
+*.log
+build
+dist
+feii.egg-info
+.venv
+config.ini
+test
