@@ -7,13 +7,6 @@ from feii.config import Config
 from feii.init import Init
 from feii.structure import Structure
 
-from feii.testing import Testing
-
-class_test = Testing()
-
-def generating_test():
-  print(class_test.path)
-
 class_config = Config
 class_structure = Structure()
 class_log = Log()
