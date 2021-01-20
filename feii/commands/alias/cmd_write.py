@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, generating_variables, generating_variables_for_alias, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_alias, deleting_unnecessary_variables
 from feii.aliases import Aliases
 
 class_aliases = Aliases()
@@ -9,11 +9,11 @@ class_aliases.logger = class_log.logger
 
 def start_add_alias_for_all_indices(check_mode):
   if not check_mode:
-    print('-0-')
+    print('-run-')
 
 def start_check_mode_add_alias_for_all_indices(check_mode):
   if check_mode:
-    print('-0-')
+    print('-check_mode-')
 
 @click.command(short_help='In the development.')
 @click.option(
@@ -29,11 +29,19 @@ def start_check_mode_add_alias_for_all_indices(check_mode):
   expose_value=True,
   help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
 )
-def cli(check_mode, log_level):
+@click.option(
+  '-p', '--path_to_file',
+  default='',
+  expose_value=True,
+  help='path'
+)
+def cli(check_mode, log_level, path_to_file):
   """In the development"""
 
   logging_level(log_level)
   class_log.logger.info("In the development")
+
+  updating_variables(path_to_file)
 
   generating_variables()
   generating_variables_for_alias()

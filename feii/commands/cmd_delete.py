@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, generating_variables, generating_variables_for_delete, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_delete, deleting_unnecessary_variables
 from feii.delete import Delete
 
 class_delete = Delete()
@@ -29,11 +29,19 @@ def start_check_mode_delete_indexes(check_mode):
   expose_value=True,
   help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
 )
-def cli(check_mode, log_level):
+@click.option(
+  '-p', '--path_to_file',
+  default='',
+  expose_value=True,
+  help='path'
+)
+def cli(check_mode, log_level, path_to_file):
   """Deletion of empty indexes"""
 
   logging_level(log_level)
   class_log.logger.info("Started deletion of empty indexes")
+
+  updating_variables(path_to_file)
 
   generating_variables()
   generating_variables_for_delete()

@@ -3,8 +3,11 @@
 import re
 
 class Config:
+
+  path: str = ''
+  ELASTIC_URL: str = 'http://localhost:9200'
+
   def __init__(self,
-    ELASTIC_URL: str = 'http://localhost:9200',
     ES_URLS: str = [],
     MAX_CURRENT_INDEX_SIZE_GB: int = 50,
     MAX_RELOCATING: int = 25,
@@ -16,7 +19,6 @@ class Config:
     settings_list: str = '',
     ilm_list: str = ''
   ):
-    self.ELASTIC_URL = ELASTIC_URL
     self.ES_URLS: str = [
       "{0}/_cat/indices?format=json&bytes=gb".format(self.ELASTIC_URL),
       "{0}/_alias".format(self.ELASTIC_URL),

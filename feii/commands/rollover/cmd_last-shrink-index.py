@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, generating_variables, generating_variables_for_rollover, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_rollover, deleting_unnecessary_variables
 from feii.rollover import Rollover
 
 class_rollover = Rollover()
@@ -29,11 +29,19 @@ def start_check_mode_rollover_last_shrink_indices(check_mode):
   expose_value=True,
   help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
 )
-def cli(check_mode, log_level):
+@click.option(
+  '-p', '--path_to_file',
+  default='',
+  expose_value=True,
+  help='path'
+)
+def cli(check_mode, log_level, path_to_file):
   """Rollover only the latest big shrink indexes"""
 
   logging_level(log_level)
   class_log.logger.info("Started rollover only the latest big shrink indexes")
+
+  updating_variables(path_to_file)
 
   generating_variables()
   generating_variables_for_rollover()

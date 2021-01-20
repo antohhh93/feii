@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 
 import requests
+from feii.log import Log
 from feii.config import Config
+from feii.request import Request
 
-class Cluster(Config):
+class Cluster(Config, Request):
   def __init__(self,
     cluster: str = {},
   ):
@@ -23,11 +25,24 @@ class Cluster(Config):
     return int(self.cluster['number_of_pending_tasks']) <= self.MAX_TASKS
 
   def retry_failed(self):
-    return requests.post("{0}/_cluster/reroute?retry_failed".format( self.ELASTIC_URL ))
+    self.request = requests.post("{0}/_cluster/reroute?retry_failed".format( self.ELASTIC_URL ))
+
+  def check_retry_failed(self):
+    if self.status_request():
+      self.logger.info("Retry_failed for index is over")
+      return True
 
 if __name__ == "__main__":
+  class_log = Log()
+  class_log.remove_old_log_file()
+  class_log.get_file_handler()
+  class_log.get_stream_handler()
+  class_log.get_logger()
+
   class_cluster = Cluster()
   class_cluster.get_status_cluster()
+
+  class_cluster.logger = class_log.logger
 
   if class_cluster.check_status_cluster_not_red():
     print('not red')

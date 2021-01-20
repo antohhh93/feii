@@ -6,8 +6,10 @@ from feii.log import Log
 from feii.config import Config
 from feii.init import Init
 from feii.structure import Structure
+from feii.path_to_file import PathToFile
 
 class_config = Config
+class_path_to_file = PathToFile()
 class_structure = Structure()
 class_log = Log()
 
@@ -15,6 +17,10 @@ class_log.remove_old_log_file()
 class_log.get_file_handler()
 class_log.get_stream_handler()
 class_log.get_logger()
+
+def updating_variables(path_to_file):
+  class_config.path = path_to_file
+  class_path_to_file.get_config()
 
 def logging_level(level):
   if level:

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, generating_variables, generating_variables_for_alias, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_alias, deleting_unnecessary_variables
 from feii.aliases import Aliases
 
 class_aliases = Aliases()
@@ -29,11 +29,19 @@ def start_check_mode_add_alias_for_shrink_indices(check_mode):
   expose_value=True,
   help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
 )
-def cli(check_mode, log_level):
+@click.option(
+  '-p', '--path_to_file',
+  default='',
+  expose_value=True,
+  help='path'
+)
+def cli(check_mode, log_level, path_to_file):
   """Adding an second alias for only shrink indexes"""
 
   logging_level(log_level)
   class_log.logger.info("Started adding an second alias for only shrink indexes")
+
+  updating_variables(path_to_file)
 
   generating_variables()
   generating_variables_for_alias()
