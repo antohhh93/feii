@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import click
-# import logging
 from feii.log import Log
 from feii.config import Config
 from feii.init import Init
@@ -49,7 +48,10 @@ def generating_variables():
   del(class_structure.index_to_remove)
 
 def generating_variables_for_delete():
+  class_structure.creating_array_last_index()
   class_structure.creating_array_not_last_index()
+
+  class_structure.creating_array_delete_index()
 
 def generating_variables_for_alias():
   class_structure.creating_array_unmanaged_index()

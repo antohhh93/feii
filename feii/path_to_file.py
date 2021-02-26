@@ -17,7 +17,11 @@ class PathToFile(Config):
     if config_file.has_option("CONFIG", "elastic_url"):
       Config.ELASTIC_URL = config_file.get("CONFIG", "elastic_url")
 
+  def get_setting(self):
+    if "CONFIG" in self.t1:
+      for one, test in self.t1["CONFIG"].items():
+        print("Name [{0}] - [{1}]".format( one, test ))
+
 if __name__ == "__main__":
 
   class_path_to_file = PathToFile()
-  class_path_to_file.get_config(path)
