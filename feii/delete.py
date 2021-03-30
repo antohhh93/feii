@@ -114,7 +114,7 @@ class Delete(Structure):
       self.data_are_in_index = True
 
   def check_count_docs_in_prev_index(self):
-    if 'docs.count' in self.prev_index_to_check and int(self.prev_index_to_check['docs.count']) > 0:
+    if 'docs.count' in self.prev_index_to_check and self.prev_index_to_check['docs.count'] != None and int(self.prev_index_to_check['docs.count']) > 0:
       self.data_are_in_index = True
 
 if __name__ == "__main__":
