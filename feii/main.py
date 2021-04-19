@@ -83,6 +83,13 @@ def generating_variables_for_rollover():
   class_structure.creating_array_not_last_index()
   class_structure.creating_array_last_shrink_index()
 
+def generating_variables_for_update():
+  class_structure.creating_array_last_index()
+  class_structure.creating_array_not_last_index()
+
+  class_structure.creating_array_timeout_last_index()
+  class_structure.creating_array_timeout_not_last_index()
+
 def generating_variables_for_fix_error():
   class_structure.creating_array_unmanaged_index()
   class_structure.remove_invalid_indexes_in_array( class_structure.unmanaged_indices )

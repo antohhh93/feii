@@ -13,6 +13,7 @@ class Config:
     MAX_RELOCATING: int = 25,
     MAX_TASKS: int = 500,
     MASTER_TIMEOUT: str = '2m',
+    DELAYED_TIMEOUT: str = '25m',
     index_pattern: str = re.compile(r'^(shrink-)?(.+)-(\d{6})$'),
     index_pools: str = '',
     alias_list: str = '',
@@ -29,6 +30,7 @@ class Config:
     self.MAX_RELOCATING = MAX_RELOCATING
     self.MAX_TASKS = MAX_TASKS
     self.MASTER_TIMEOUT = MASTER_TIMEOUT
+    self.DELAYED_TIMEOUT = DELAYED_TIMEOUT
     self.index_pattern = index_pattern
     self.index_pools = index_pools
     self.alias_list = alias_list

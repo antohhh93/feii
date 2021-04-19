@@ -32,6 +32,8 @@ class Index(Config, Request):
     error_ilm_not_last_indices: str = [],
     error_ilm_not_hot_phase_indices: str = [],
     delete_last_indices: str = [],
+    timeout_last_indices: str = [],
+    timeout_not_last_indices: str = [],
     prev_index_to_check: str = {},
     without_shrink_prev_index: str = '',
     new_index_name: str = '',
@@ -59,6 +61,8 @@ class Index(Config, Request):
     self.error_ilm_not_last_indices = error_ilm_not_last_indices
     self.error_ilm_not_hot_phase_indices = error_ilm_not_hot_phase_indices
     self.delete_last_indices = delete_last_indices
+    self.timeout_last_indices = timeout_last_indices
+    self.timeout_not_last_indices = timeout_not_last_indices
     self.prev_index_to_check = prev_index_to_check
     self.without_shrink_prev_index = without_shrink_prev_index
     self.new_index_name = new_index_name
@@ -184,7 +188,7 @@ class Index(Config, Request):
       if Config.ilm_list['indices'][index['index']]['phase'] != 'hot':
         self.error_ilm_not_hot_phase_indices.append(index)
 
-  def creating_array_delete_index(self): #номер должен быть выше 3
+  def creating_array_delete_index(self):
     for index in self.last_indices:
       if int(self.index_pattern.match(index['index']).group(3)) > 3:
         self.delete_last_indices.append(index)
@@ -200,6 +204,18 @@ class Index(Config, Request):
       if index_array['index'] == 'shrink-' + self.without_shrink_prev_index:
         self.prev_index_to_check['index'] = 'shrink-' + self.without_shrink_prev_index
         self.prev_index_to_check['docs.count'] = index_array['docs.count']
+
+  def creating_array_timeout_last_index(self):
+    for index in self.last_indices:
+      delayed_timeout = Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout']
+      if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or delayed_timeout != '1m':
+        self.timeout_last_indices.append(index)
+
+  def creating_array_timeout_not_last_index(self):
+    for index in self.not_last_indices:
+      delayed_timeout = Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout']
+      if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or delayed_timeout != self.DELAYED_TIMEOUT:
+        self.timeout_not_last_indices.append(index)
 
   def remove_invalid_indexes_in_array(self, indexes_array: str = []):
     for index in indexes_array:

@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+
+import re
+import requests
+from feii.log import Log
+from feii.config import Config
+from feii.init import Init
+from feii.structure import Structure
+
+class Update(Structure):
+  def debug_detail_index(self):
+    self.index = 'test-000001'
+    self.index_docs_count = 0
+
+  def update_index(self):
+    self.request = requests.put("{0}/{1}/_settings?master_timeout={2}".format( self.ELASTIC_URL, self.index, self.MASTER_TIMEOUT ), json=self.data )
+
+  def check_update_index(self):
+    if self.status_request():
+      self.logger.info("Updating index [{0}] settings - True".format( self.index ))
+      return True
+
+  def failed_check_update_timeout_index(self):
+    if not self.update_timeout_index_and_check():
+      self.logger.error("Failed updating timeout index [{0}]".format( self.index ))
+      self.logger.warning("Skip this index and continue with the following index")
+
+  def update_timeout_for_last_indexes(self):
+    for index in self.timeout_last_indices:
+      self.index = index['index']
+      self.data = { "settings": { "index.unassigned.node_left.delayed_timeout": "1m" } }
+
+      self.failed_check_update_timeout_index()
+
+  def update_timeout_for_not_last_indexes(self):
+    for index in self.timeout_not_last_indices:
+      self.index = index['index']
+      self.data = { "settings": { "index.unassigned.node_left.delayed_timeout": self.DELAYED_TIMEOUT } }
+
+      self.failed_check_update_timeout_index()
+
+if __name__ == "__main__":
+  class_config = Config
+  class_config.index_pools = Init(count = 4).list_pools()
+  class_config.ilm_list = class_config.index_pools[3].json()
+  class_config.settings_list = class_config.index_pools[2].json()
+  class_config.alias_list = class_config.index_pools[1].json()
+
+  class_log = Log()
+  class_log.remove_old_log_file()
+  class_log.get_file_handler()
+  class_log.get_stream_handler()
+  class_log.get_logger()
+
+  class_update = Update()
+  class_update.debug_detail_index()
+
+  class_update.logger = class_log.logger

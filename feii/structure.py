@@ -41,6 +41,11 @@ class Structure(Index, Ilm, Alias, Function, Cluster, Request):
     self.check_create_next_index()
     return self.check_rollover_index()
 
+  def update_timeout_index_and_check(self):
+    self.cluster_status()
+    self.update_index()
+    return self.check_update_index()
+
   def add_write_disable_for_index_and_check(self):
     self.add_alias_for_index_and_write_disable()
     self.cluster_status()

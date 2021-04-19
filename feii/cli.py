@@ -8,6 +8,7 @@ rollover_folder = os.path.join(os.path.dirname(__file__), 'commands/rollover')
 alias_folder = os.path.join(os.path.dirname(__file__), 'commands/alias')
 error_folder = os.path.join(os.path.dirname(__file__), 'commands/error')
 delete_folder = os.path.join(os.path.dirname(__file__), 'commands/delete')
+update_folder = os.path.join(os.path.dirname(__file__), 'commands/update')
 
 class AllCLI(click.MultiCommand):
   def list_commands(self, ctx):
@@ -85,6 +86,22 @@ class DeleteCLI(click.MultiCommand):
   def get_command(self, ctx, name):
     try:
       mod = __import__(f"feii.commands.delete.cmd_{name}", None, None, ["cli"])
+    except ImportError:
+      return
+    return mod.cli
+
+class UpdateCLI(click.MultiCommand):
+  def list_commands(self, ctx):
+    rv = []
+    for filename in os.listdir(update_folder):
+      if filename.endswith('.py') and filename.startswith("cmd_"):
+        rv.append(filename[4:-3])
+    rv.sort()
+    return rv
+
+  def get_command(self, ctx, name):
+    try:
+      mod = __import__(f"feii.commands.update.cmd_{name}", None, None, ["cli"])
     except ImportError:
       return
     return mod.cli
