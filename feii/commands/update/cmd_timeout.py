@@ -14,7 +14,8 @@ def start_update_timeout_all(check_mode):
 
 def start_check_update_timeout_all(check_mode):
   if check_mode:
-    class_update.update_timeout_for_hot_box_indexes_in_check_mode()
+    class_update.update_timeout_for_last_indexes_check_mode()
+    class_update.update_timeout_for_not_last_indexes_check_mode()
 
 @click.command(short_help='Update setting index.unassigned.node_left.delayed_timeout.')
 @click.option(

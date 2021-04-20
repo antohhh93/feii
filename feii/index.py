@@ -207,14 +207,12 @@ class Index(Config, Request):
 
   def creating_array_timeout_last_index(self):
     for index in self.last_indices:
-      delayed_timeout = Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout']
-      if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or delayed_timeout != '1m':
+      if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout'] != '1m':
         self.timeout_last_indices.append(index)
 
   def creating_array_timeout_not_last_index(self):
     for index in self.not_last_indices:
-      delayed_timeout = Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout']
-      if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or delayed_timeout != self.DELAYED_TIMEOUT:
+      if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout'] != self.DELAYED_TIMEOUT:
         self.timeout_not_last_indices.append(index)
 
   def remove_invalid_indexes_in_array(self, indexes_array: str = []):

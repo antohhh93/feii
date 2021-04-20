@@ -39,6 +39,14 @@ class Update(Structure):
 
       self.failed_check_update_timeout_index()
 
+  def update_timeout_for_last_indexes_check_mode(self):
+    for index in self.timeout_last_indices:
+      self.logger.warning("[check_mode] Updating last index [{0}] settings (delayed_timeout - 1m)".format( index['index'] ))
+
+  def update_timeout_for_not_last_indexes_check_mode(self):
+    for index in self.timeout_not_last_indices:
+      self.logger.warning("[check_mode] Updating not last index [{0}] settings (delayed_timeout - {1})".format( index['index'], self.DELAYED_TIMEOUT ))
+
 if __name__ == "__main__":
   class_config = Config
   class_config.index_pools = Init(count = 4).list_pools()
