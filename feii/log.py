@@ -53,10 +53,3 @@ class Log:
   def logging_level_notset(self, level):
     if level == 'notset' or level == 'NOTSET' or level == '=notset' or level == '=NOTSET':
       self.logger.setLevel(logging.NOTSET)
-
-if __name__ == "__main__":
-  class_log = Log()
-  class_log.remove_old_log_file()
-  class_log.get_file_handler()
-  class_log.get_stream_handler()
-  class_log.get_logger()

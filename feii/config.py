@@ -38,6 +38,3 @@ class Config:
     self.alias_list = alias_list
     self.settings_list = settings_list
     self.ilm_list = ilm_list
-
-if __name__ == "__main__":
-  print(Config().ELASTIC_URL)

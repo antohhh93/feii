@@ -15,7 +15,7 @@ def start_check_mode_add_alias_for_shrink_indices(check_mode):
   if check_mode:
     class_aliases.add_alias_for_shrink_indices_check_mode()
 
-@click.command(short_help='Adding an second alias for only shrink indexes.')
+@click.command(short_help='Adding a second alias for only shrink indexes.')
 @click.option(
   '-c', '--check-mode',
   is_flag=True,
@@ -27,7 +27,7 @@ def start_check_mode_add_alias_for_shrink_indices(check_mode):
   default='info',
   show_default=True,
   expose_value=True,
-  help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
+  help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
 )
 @click.option(
   '-p', '--path_to_file',
@@ -36,10 +36,10 @@ def start_check_mode_add_alias_for_shrink_indices(check_mode):
   help='path'
 )
 def cli(check_mode, log_level, path_to_file):
-  """Adding an second alias for only shrink indexes"""
+  """Adding a second alias for only shrink indexes"""
 
   logging_level(log_level)
-  class_log.logger.info("Started adding an second alias for only shrink indexes")
+  class_log.logger.info("Started adding a second alias for only shrink indexes")
 
   updating_variables(path_to_file)
 

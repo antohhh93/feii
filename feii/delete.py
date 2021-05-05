@@ -116,27 +116,3 @@ class Delete(Structure):
   def check_count_docs_in_prev_index(self):
     if 'docs.count' in self.prev_index_to_check and self.prev_index_to_check['docs.count'] != None and int(self.prev_index_to_check['docs.count']) > 0:
       self.data_are_in_index = True
-
-if __name__ == "__main__":
-  class_config = Config
-  class_config.index_pools = Init(count = 4).list_pools()
-  class_config.ilm_list = class_config.index_pools[3].json()
-  class_config.settings_list = class_config.index_pools[2].json()
-  class_config.alias_list = class_config.index_pools[1].json()
-
-  class_log = Log()
-  class_log.remove_old_log_file()
-  class_log.get_file_handler()
-  class_log.get_stream_handler()
-  class_log.get_logger()
-
-  class_delete = Delete()
-  class_delete.debug_detail_index()
-
-  class_delete.logger = class_log.logger
-
-  class_delete.delete_not_last_indexes()
-  class_delete.delete_not_last_indexes_check_mode()
-
-  class_delete.delete_last_indexes()
-  class_delete.delete_last_indexes_check_mode()

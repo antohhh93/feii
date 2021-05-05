@@ -88,26 +88,3 @@ class Rollover(Structure):
   def rollover_last_shrink_index_in_check_mode(self):
     for index in self.last_shrink_indices:
       self.logger.warning("[check_mode] Last shrink index [{0}][{1}gb] is larger the allowed size - {2}gb".format( index['index'], int(index['pri.store.size']), self.MAX_CURRENT_INDEX_SIZE_GB ))
-
-if __name__ == "__main__":
-  class_config = Config
-  class_config.index_pools = Init(count = 4).list_pools()
-  class_config.ilm_list = class_config.index_pools[3].json()
-  class_config.settings_list = class_config.index_pools[2].json()
-
-  class_log = Log()
-  class_log.remove_old_log_file()
-  class_log.get_file_handler()
-  class_log.get_stream_handler()
-  class_log.get_logger()
-
-  class_rollover = Rollover()
-  class_rollover.logger = class_log.logger
-
-  class_rollover.rollover_last_index()
-  class_rollover.rollover_not_last_index()
-  class_rollover.rollover_last_shrink_index()
-
-  class_rollover.rollover_last_index_in_check_mode()
-  class_rollover.rollover_not_last_index_in_check_mode()
-  class_rollover.rollover_last_shrink_index_in_check_mode()

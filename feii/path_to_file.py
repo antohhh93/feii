@@ -21,7 +21,3 @@ class PathToFile(Config):
     if "CONFIG" in self.t1:
       for one, test in self.t1["CONFIG"].items():
         print("Name [{0}] - [{1}]".format( one, test ))
-
-if __name__ == "__main__":
-
-  class_path_to_file = PathToFile()

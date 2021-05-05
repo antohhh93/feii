@@ -35,19 +35,3 @@ class Function:
     if self.retry > 0:
       self.logger.warning("Sleep time {0}".format( int(60 * self.retry) ))
       time.sleep(60 * self.retry)
-
-if __name__ == "__main__":
-  class_log = Log()
-  class_log.remove_old_log_file()
-  class_log.get_file_handler()
-  class_log.get_stream_handler()
-  class_log.get_logger()
-
-  class_function = Function()
-  class_function.debug_detail_index()
-
-  class_function.logger = class_log.logger
-
-  class_function.find_next_index()
-  class_function.find_prev_index()
-  class_function.time_sleep()

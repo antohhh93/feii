@@ -17,11 +17,3 @@ class Init(Config):
     results = pool.map(requests.get, self.ES_URLS)
     pool.close()
     return results
-
-if __name__ == "__main__":
-  Init(count = 4).list_pools()
-  class_config = Config
-  class_config.index_pools = Init(count = 4).list_pools()
-  class_config.alias_list = class_config.index_pools[1].json()
-  class_config.settings_list = class_config.index_pools[2].json()
-  class_config.ilm_list = class_config.index_pools[3].json()

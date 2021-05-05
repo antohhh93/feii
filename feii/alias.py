@@ -43,37 +43,3 @@ class Alias(Config, Request):
     if self.status_request():
       self.logger.info("Writing is enabled for the index [{0}]".format( self.index ))
       return True
-
-if __name__ == "__main__":
-  class_config = Config
-  class_config.index_pools = Init(count = 4).list_pools()
-  class_config.alias_list = class_config.index_pools[1].json()
-
-  class_log = Log()
-  class_log.remove_old_log_file()
-  class_log.get_file_handler()
-  class_log.get_stream_handler()
-  class_log.get_logger()
-
-  class_function = Function()
-  class_function.debug_detail_index()
-
-  class_alias = Alias()
-  class_alias.debug_detail_index()
-  class_alias.index = class_function.find_next_index()
-
-  class_alias.logger = class_log.logger
-
-  class_alias.add_alias_for_index()
-  class_alias.request_add_alias_for_index()
-  class_alias.check_add_alias_for_index()
-
-  class_alias.debug_detail_index()
-  class_alias.add_alias_for_index_and_write_disable()
-  class_alias.request_add_alias_for_index()
-  class_alias.check_disable_write_for_index()
-
-  class_alias.index = class_function.find_next_index()
-  class_alias.add_alias_for_index_and_write_enable()
-  class_alias.request_add_alias_for_index()
-  class_alias.check_enable_write_for_index()

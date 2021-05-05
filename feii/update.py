@@ -25,7 +25,7 @@ class Update(Structure):
       self.logger.error("Failed updating timeout index [{0}]".format( self.index ))
       self.logger.warning("Skip this index and continue with the following index")
 
-   def update_timeout_for_last_indexes(self):
+  def update_timeout_for_last_indexes(self):
     for index in self.timeout_last_indices:
       self.index = index['index']
       self.data = { "settings": { "index.unassigned.node_left.delayed_timeout": self.HOT_DELAYED_TIMEOUT } }
@@ -46,21 +46,3 @@ class Update(Structure):
   def update_timeout_for_not_last_indexes_check_mode(self):
     for index in self.timeout_not_last_indices:
       self.logger.warning("[check_mode] Updating not last index [{0}] settings (delayed_timeout - {1})".format( index['index'], self.COLD_DELAYED_TIMEOUT ))
-
-if __name__ == "__main__":
-  class_config = Config
-  class_config.index_pools = Init(count = 4).list_pools()
-  class_config.ilm_list = class_config.index_pools[3].json()
-  class_config.settings_list = class_config.index_pools[2].json()
-  class_config.alias_list = class_config.index_pools[1].json()
-
-  class_log = Log()
-  class_log.remove_old_log_file()
-  class_log.get_file_handler()
-  class_log.get_stream_handler()
-  class_log.get_logger()
-
-  class_update = Update()
-  class_update.debug_detail_index()
-
-  class_update.logger = class_log.logger

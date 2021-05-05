@@ -31,23 +31,3 @@ class Cluster(Config, Request):
     if self.status_request():
       self.logger.info("Retry_failed for index is over")
       return True
-
-if __name__ == "__main__":
-  class_log = Log()
-  class_log.remove_old_log_file()
-  class_log.get_file_handler()
-  class_log.get_stream_handler()
-  class_log.get_logger()
-
-  class_cluster = Cluster()
-  class_cluster.get_status_cluster()
-
-  class_cluster.logger = class_log.logger
-
-  if class_cluster.check_status_cluster_not_red():
-    print('not red')
-  if class_cluster.check_count_relocating_shards_in_cluster():
-    print('ok relocating_shards')
-  if class_cluster.check_count_pending_tasks_in_cluster():
-    print('ok pending_tasks')
-  print(class_cluster.cluster)

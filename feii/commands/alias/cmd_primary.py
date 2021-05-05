@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_alias, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_alias, generating_variables_for_alias_not_srink, deleting_unnecessary_variables
 from feii.aliases import Aliases
 
 class_aliases = Aliases()
@@ -27,7 +27,13 @@ def start_check_mode_add_necessary_alias_for_indices(check_mode):
   default='info',
   show_default=True,
   expose_value=True,
-  help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
+  help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
+)
+@click.option(
+  '-n', '--not-shrink',
+  is_flag=True,
+  expose_value=True,
+  help='Indexes only, no shrink.'
 )
 @click.option(
   '-p', '--path_to_file',
@@ -35,7 +41,7 @@ def start_check_mode_add_necessary_alias_for_indices(check_mode):
   expose_value=True,
   help='path'
 )
-def cli(check_mode, log_level, path_to_file):
+def cli(check_mode, log_level, not_shrink, path_to_file):
   """Adding an primary alias for all indexes"""
 
   logging_level(log_level)
@@ -44,7 +50,10 @@ def cli(check_mode, log_level, path_to_file):
   updating_variables(path_to_file)
 
   generating_variables()
-  generating_variables_for_alias()
+  if not_shrink:
+    generating_variables_for_alias_not_srink()
+  else:
+    generating_variables_for_alias()
   deleting_unnecessary_variables()
 
   start_add_necessary_alias_for_indices(check_mode)
