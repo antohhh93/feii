@@ -11,13 +11,15 @@ class Aliases(Structure):
     for index in self.indices_no_alias:
       self.index = index['index']
       self.alias = index['index.alias']
-      self.add_alias_for_index_and_check()
+      if self.add_alias_for_index_and_check():
+        self.indices_not_write.append(index)
 
   def add_necessary_alias_for_indices(self):
     for index in self.indices_no_necessary_alias:
       self.index = index['index']
       self.alias = index['index.alias']
-      self.add_alias_for_index_and_check()
+      if self.add_alias_for_index_and_check():
+        self.indices_not_write.append(index)
 
   def add_alias_for_shrink_indices(self):
     for index in self.shrink_indices_no_alias:
