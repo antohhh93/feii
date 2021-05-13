@@ -72,7 +72,24 @@ def generating_variables_for_alias_not_srink():
 
   class_structure.creating_array_no_alias_in_index()
   class_structure.creating_array_no_necessary_alias_in_index()
-  class_structure.creating_array_no_shrink_alias_in_index()
+
+def generating_variables_for_write_alias():
+  class_structure.creating_array_unmanaged_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.unmanaged_indices )
+
+  class_structure.creating_array_shrink_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.shrink_indices )
+
+  class_structure.creating_array_not_last_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.not_last_indices )
+
+  class_structure.creating_array_no_alias_in_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.indices_no_alias )
+
+  class_structure.creating_array_no_necessary_alias_in_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.indices_no_necessary_alias )
+
+  class_structure.creating_array_not_write_in_index()
 
 def generating_variables_for_rollover():
   class_structure.creating_array_invalid_size_index()

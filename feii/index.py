@@ -26,6 +26,7 @@ class Index(Config, Request):
     indices_no_alias: str = [],
     indices_no_necessary_alias: str = [],
     shrink_indices_no_alias: str = [],
+    indices_not_write: str = [],
     error_ilm_indices: str = [],
     error_ilm_shrink_indices: str = [],
     error_ilm_last_indices: str = [],
@@ -55,6 +56,7 @@ class Index(Config, Request):
     self.indices_no_alias = indices_no_alias
     self.indices_no_necessary_alias = indices_no_necessary_alias
     self.shrink_indices_no_alias = shrink_indices_no_alias
+    self.indices_not_write = indices_not_write
     self.error_ilm_indices = error_ilm_indices
     self.error_ilm_shrink_indices = error_ilm_shrink_indices
     self.error_ilm_last_indices = error_ilm_last_indices
@@ -159,6 +161,11 @@ class Index(Config, Request):
       alias = re.sub(r'(shrink-)', '', index['index'])
       if not alias in Config.alias_list[index['index']]['aliases']:
         self.shrink_indices_no_alias.append(index)
+
+  def creating_array_not_write_in_index(self):
+    for index in self.indices:
+      if not 'is_write_index' in Config.alias_list[index['index']]['aliases'][index['index.alias']]:
+        self.indices_not_write.append(index)
 
   def creating_array_error_ilm_index(self):
     for index in self.indices:

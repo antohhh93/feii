@@ -42,10 +42,10 @@ def start_check_mode_add_necessary_alias_for_indices(check_mode):
   help='path'
 )
 def cli(check_mode, log_level, not_shrink, path_to_file):
-  """Adding an primary alias for all indexes"""
+  """Adding a primary alias for all indexes"""
 
   logging_level(log_level)
-  class_log.logger.info("Started adding an primary alias for all indexes")
+  class_log.logger.info("Started adding a primary alias for all indexes")
 
   updating_variables(path_to_file)
 
