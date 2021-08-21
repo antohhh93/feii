@@ -51,12 +51,17 @@ class Ilm(Config, Request):
   def next_step_index_in_cold(self):
     self.data = { "current_step": { "phase": self.ilm_info_for_index['phase'], "action": self.ilm_info_for_index['action'], "name": self.ilm_info_for_index['step']}, "next_step": { "phase": "cold", "action": "set_priority", "name": "set_priority" } }
 
-  def request_next_step_for_index(self):
+  def request_step_for_index(self):
     self.request = requests.post("{0}/_ilm/move/{1}?master_timeout={2}".format( self.ELASTIC_URL, self.index, self.MASTER_TIMEOUT ), json=self.data )
 
   def check_next_step_for_index(self):
     if self.status_request():
       self.logger.info("Next step ILM for index [{0}] - True".format( self.index ))
+      return True
+
+  def check_re_step_for_index(self):
+    if self.status_request():
+      self.logger.info("Re step ILM for index [{0}] - True".format( self.index ))
       return True
 
   def remove_block_index(self):

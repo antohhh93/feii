@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_delete, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_delete, deleting_unnecessary_variables
 from feii.delete import Delete
 
 class_delete = Delete()
@@ -45,7 +45,7 @@ def cli(check_mode, log_level, path_to_file):
 
   updating_variables(path_to_file)
 
-  generating_variables()
+  generating_variables_for_indices()
   generating_variables_for_delete()
   deleting_unnecessary_variables()
 

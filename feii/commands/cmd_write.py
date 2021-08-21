@@ -5,8 +5,8 @@ from feii.cli import WriteCLI
 
 @click.command(
   cls=WriteCLI,
-  short_help='Fix of writing in indices.',
+  short_help='Correction of writing in indices.',
   epilog="Run 'feii write COMMAND --help' for more information on a command."
 )
 def cli():
-  """Fix of writing in indices"""
+  """Correction of writing in indices"""

@@ -27,6 +27,7 @@ class Index(Config, Request):
     indices_no_necessary_alias: str = [],
     shrink_indices_no_alias: str = [],
     indices_not_write: str = [],
+    indices_write_false: str = [],
     error_ilm_indices: str = [],
     error_ilm_shrink_indices: str = [],
     error_ilm_last_indices: str = [],
@@ -57,6 +58,7 @@ class Index(Config, Request):
     self.indices_no_necessary_alias = indices_no_necessary_alias
     self.shrink_indices_no_alias = shrink_indices_no_alias
     self.indices_not_write = indices_not_write
+    self.indices_write_false = indices_write_false
     self.error_ilm_indices = error_ilm_indices
     self.error_ilm_shrink_indices = error_ilm_shrink_indices
     self.error_ilm_last_indices = error_ilm_last_indices
@@ -167,6 +169,11 @@ class Index(Config, Request):
       if not 'is_write_index' in Config.alias_list[index['index']]['aliases'][index['index.alias']]:
         self.indices_not_write.append(index)
 
+  def creating_array_write_false_in_index(self):
+    for index in self.indices:
+      if Config.alias_list[index['index']]['aliases'][index['index.alias']]['is_write_index'] == False:
+        self.indices_write_false.append(index)
+
   def creating_array_error_ilm_index(self):
     for index in self.indices:
       if 'step' in Config.ilm_list['indices'][index['index']] and Config.ilm_list['indices'][index['index']]['step'] == "ERROR":
@@ -238,4 +245,28 @@ class Index(Config, Request):
   def check_create_new_index(self):
     if self.status_request():
       self.logger.info("Create new index [{0}] - True".format( self.new_index_name ))
+      return True
+
+  def update_index(self):
+    self.request = requests.put("{0}/{1}/_settings?master_timeout={2}".format( self.ELASTIC_URL, self.index, self.MASTER_TIMEOUT ), json=self.data )
+
+  def check_update_index(self):
+    if self.status_request():
+      self.logger.info("Updating index settings [{0}] - True".format( self.index ))
+      return True
+
+  def delete_index(self):
+    self.request = requests.delete("{0}/{1}".format( self.ELASTIC_URL, self.index ))
+
+  def check_delete_index(self):
+    if self.status_request():
+      self.logger.info("Deleting index [{0}] - True".format( self.index ))
+      return True
+
+  def reindexed(self):
+    self.request = requests.post("{0}/_reindex?slices=60&refresh".format( self.ELASTIC_URL ), json=self.data)
+
+  def check_reindexed(self):
+    if self.status_request():
+      self.logger.info("Reindexed [{0}] - True".format( self.index ))
       return True

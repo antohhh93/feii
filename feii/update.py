@@ -4,6 +4,7 @@ import re
 import requests
 from feii.log import Log
 from feii.config import Config
+from feii.request import Request
 from feii.init import Init
 from feii.structure import Structure
 
@@ -12,16 +13,8 @@ class Update(Structure):
     self.index = 'test-000001'
     self.index_docs_count = 0
 
-  def update_index(self):
-    self.request = requests.put("{0}/{1}/_settings?master_timeout={2}".format( self.ELASTIC_URL, self.index, self.MASTER_TIMEOUT ), json=self.data )
-
-  def check_update_index(self):
-    if self.status_request():
-      self.logger.info("Updating index [{0}] settings - True".format( self.index ))
-      return True
-
   def failed_check_update_timeout_index(self):
-    if not self.update_timeout_index_and_check():
+    if not self.update_index_and_check():
       self.logger.error("Failed updating timeout index [{0}]".format( self.index ))
       self.logger.warning("Skip this index and continue with the following index")
 

@@ -19,14 +19,6 @@ class Delete(Structure):
     self.index = 'test-000001'
     self.index_docs_count = 0
 
-  def delete_empty_index(self):
-    self.request = requests.delete("{0}/{1}".format( self.ELASTIC_URL, self.index ))
-
-  def check_delete_empty_index(self):
-    if self.status_request():
-      self.logger.info("Deleting index [{0}] since it is empty - True".format( self.index ))
-      return True
-
   def delete_not_last_indexes(self):
     for index in self.not_last_indices:
       self.index = index['index']
@@ -36,9 +28,7 @@ class Delete(Structure):
       if int(index['docs.count']) > 0:
         continue
 
-      self.delete_empty_index()
-      if not self.check_delete_empty_index():
-        self.logger.error("Failed delete index [{0}]".format( self.index ))
+      self.not_delete_index_and_check()
 
   def delete_not_last_indexes_check_mode(self):
     for index in self.not_last_indices:
@@ -65,9 +55,7 @@ class Delete(Structure):
 
       if not self.data_are_in_index:
         self.index = delete_index['index']
-        self.delete_empty_index()
-        if not self.check_delete_empty_index():
-          self.logger.error("Failed delete index [{0}]".format( self.index ))
+        self.not_delete_index_and_check()
 
   def delete_last_indexes_check_mode(self):
     for delete_index in self.delete_last_indices:

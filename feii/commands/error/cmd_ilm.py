@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_fix_error, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_fix_error, deleting_unnecessary_variables
 from feii.error import FixError
 
 class_fix_error = FixError()
@@ -21,7 +21,7 @@ def start_check_mode_fix_error_ilm_all(check_mode):
     class_fix_error.fix_error_ilm_not_last_index_in_check_mode()
     class_fix_error.fix_error_ilm_shrink_index_in_check_mode()
 
-@click.command(short_help='Runs all commands in order.')
+@click.command(short_help='Starts fixing all ILM errors.')
 @click.option(
   '-c', '--check-mode',
   is_flag=True,
@@ -33,7 +33,7 @@ def start_check_mode_fix_error_ilm_all(check_mode):
   default='info',
   show_default=True,
   expose_value=True,
-  help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
+  help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
 )
 @click.option(
   '-p', '--path_to_file',
@@ -42,14 +42,14 @@ def start_check_mode_fix_error_ilm_all(check_mode):
   help='path'
 )
 def cli(check_mode, log_level, path_to_file):
-  """Runs all commands in order"""
+  """Starts fixing all ILM errors"""
 
   logging_level(log_level)
-  class_log.logger.info("Started all fix ilm error")
+  class_log.logger.info("Starts fixing all ILM errors")
 
   updating_variables(path_to_file)
 
-  generating_variables()
+  generating_variables_for_indices()
   generating_variables_for_fix_error()
   deleting_unnecessary_variables()
 

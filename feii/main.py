@@ -30,8 +30,8 @@ def logging_level(level):
     class_log.logging_level_debug(level)
     class_log.logging_level_notset(level)
 
-def generating_variables():
-  class_config.index_pools = Init(count = 4).list_pools()
+def generating_variables_for_indices():
+  class_config.index_pools = Init(count = 5).list_pools()
   class_config.ilm_list = class_config.index_pools[3].json()
   class_config.settings_list = class_config.index_pools[2].json()
   class_config.alias_list = class_config.index_pools[1].json()
@@ -46,6 +46,27 @@ def generating_variables():
 
   del(class_structure.index_details)
   del(class_structure.index_to_remove)
+
+def generating_variables_for_shards():
+  class_config.index_pools = Init(count = 5).list_pools()
+  class_config.ilm_list = class_config.index_pools[3].json()
+  class_config.settings_list = class_config.index_pools[2].json()
+  class_config.alias_list = class_config.index_pools[1].json()
+
+  class_structure.logger = class_log.logger
+
+  class_structure.creating_array_shard_details_in_primary()
+  class_structure.creating_array_shard_not_duplicates()
+  class_structure.creating_array_shard_to_remove()
+  class_structure.remove_invalid_shard_name_in_array()
+  class_structure.creating_array_shards()
+
+  del(class_structure.shard_details)
+  del(class_structure.shards_details)
+  del(class_structure.shard_to_remove)
+
+def generating_variables_for_unassigned_shard():
+  class_structure.creating_array_unassigned_shard()
 
 def generating_variables_for_delete():
   class_structure.creating_array_last_index()
@@ -132,6 +153,19 @@ def generating_variables_for_fix_error():
 
   class_structure.remove_invalid_error_ilm_indexes_in_array( class_structure.error_ilm_not_hot_phase_indices )
   class_structure.creating_array_error_ilm_not_last_indices()
+
+def generating_variables_for_write_close_indices():
+  class_structure.creating_array_unmanaged_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.unmanaged_indices )
+
+  class_structure.creating_array_not_last_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.not_last_indices )
+
+  class_structure.creating_array_last_index()
+  class_structure.creating_array_not_write_in_index()
+
+  class_structure.remove_invalid_indexes_in_array( class_structure.indices_not_write )
+  class_structure.creating_array_write_false_in_index()
 
 def deleting_unnecessary_variables():
   del(class_structure.invalid_size_indices)

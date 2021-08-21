@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_write_alias, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_write_alias, deleting_unnecessary_variables
 from feii.aliases import Aliases
 
 class_aliases = Aliases()
@@ -19,7 +19,7 @@ def start_check_mode_add_alias_for_all_indices(check_mode):
     class_aliases.add_necessary_alias_for_indices_check_mode()
     class_aliases.add_write_in_indices_check_mode()
 
-@click.command(short_help='Correction of writing in indices.')
+@click.command(short_help='Adding a parameter to allow writing to the primary index.')
 @click.option(
   '-c', '--check-mode',
   is_flag=True,
@@ -43,11 +43,11 @@ def cli(check_mode, log_level, path_to_file):
   """Adding a parameter to allow writing to the primary index"""
 
   logging_level(log_level)
-  class_log.logger.info("Started adding a parameter to allow writing to the primary index")
+  class_log.logger.info("Starts adding a parameter to allow writing to the primary index")
 
   updating_variables(path_to_file)
 
-  generating_variables()
+  generating_variables_for_indices()
   generating_variables_for_write_alias()
   deleting_unnecessary_variables()
 

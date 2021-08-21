@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables, generating_variables_for_rollover, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_rollover, deleting_unnecessary_variables
 from feii.rollover import Rollover
 
 class_rollover = Rollover()
@@ -27,7 +27,7 @@ def start_check_mode_rollover_not_last_index(check_mode):
   default='info',
   show_default=True,
   expose_value=True,
-  help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
+  help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
 )
 @click.option(
   '-p', '--path_to_file',
@@ -43,7 +43,7 @@ def cli(check_mode, log_level, path_to_file):
 
   updating_variables(path_to_file)
 
-  generating_variables()
+  generating_variables_for_indices()
   generating_variables_for_rollover()
   deleting_unnecessary_variables()
 

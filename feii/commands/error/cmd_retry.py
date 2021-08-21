@@ -11,13 +11,13 @@ def start_retry_failed():
     class_cluster.retry_failed()
     class_cluster.check_retry_failed()
 
-@click.command(short_help='Runs retry_failed for index.')
+@click.command(short_help='Starts retry failed indexes.')
 @click.option(
   '-l', '--log-level',
   default='info',
   show_default=True,
   expose_value=True,
-  help='The output level of logs. \n\nOptions: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL'
+  help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
 )
 @click.option(
   '-p', '--path_to_file',
@@ -26,10 +26,10 @@ def start_retry_failed():
   help='path'
 )
 def cli(log_level, path_to_file):
-  """Runs retry_failed for index"""
+  """Starts retry failed indexes"""
 
   logging_level(log_level)
-  class_log.logger.info("Started retry_failed for index")
+  class_log.logger.info("Starts retry failed indexes")
 
   updating_variables(path_to_file)
 
