@@ -120,7 +120,7 @@ class Mapping(Structure):
         continue
 
       self.index = shard['index.name']
-      if self.cycle_next_steps():
+      if self.cycle_next_steps() is False:
         self.logger.error("Failed next step to index [{0}]".format( self.index ))
         self.logger.warning("Skip this index and continue with the following index")
         continue
