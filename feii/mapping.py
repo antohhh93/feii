@@ -20,7 +20,7 @@ class Mapping(Structure):
       self.retry = 0; return False
 
   def cycle_reindexing(self):
-    for count in range(3):
+    for count in range(5):
       self.cluster_status()
       self.data = { "conflicts": "proceed", "source": { "index": self.index }, "dest": { "index": self.next_index, "op_type": "create" } }
       if self.reindexed_and_check():
@@ -30,7 +30,7 @@ class Mapping(Structure):
 
   def cycle_next_steps(self):
     for count in range(3):
-      self.time_sleep(); self.retry += 1
+      self.cluster_status()
       if self.next_step_for_index_and_check():
         break
     else:
