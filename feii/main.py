@@ -116,6 +116,7 @@ def generating_variables_for_rollover():
   class_structure.creating_array_invalid_size_index()
   class_structure.remove_invalid_indexes_in_array( class_structure.invalid_size_indices )
 
+def generating_variables_for_rollover_next_step():
   class_structure.creating_array_unmanaged_index()
   class_structure.remove_invalid_indexes_in_array( class_structure.unmanaged_indices )
 

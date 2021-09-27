@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_rollover, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_rollover, generating_variables_for_rollover_next_step, deleting_unnecessary_variables
 from feii.rollover import Rollover
 
 class_rollover = Rollover()
@@ -40,15 +40,16 @@ def start_check_mode_rollover_all(check_mode):
   help='path'
 )
 def cli(check_mode, log_level, path_to_file):
-  """Runs all commands in order"""
+  """Runs all commands in order (only for big indexes)"""
 
   logging_level(log_level)
-  class_log.logger.info("Started rollover all big indexes")
+  class_log.logger.info("Started rollover all big indexes (only for big indexes)")
 
   updating_variables(path_to_file)
 
   generating_variables_for_indices()
   generating_variables_for_rollover()
+  generating_variables_for_rollover_next_step()
   deleting_unnecessary_variables()
 
   start_rollover_all(check_mode)

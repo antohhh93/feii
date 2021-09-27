@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_rollover, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_rollover, generating_variables_for_rollover_next_step, deleting_unnecessary_variables
 from feii.rollover import Rollover
 
 class_rollover = Rollover()
@@ -45,6 +45,7 @@ def cli(check_mode, log_level, path_to_file):
 
   generating_variables_for_indices()
   generating_variables_for_rollover()
+  generating_variables_for_rollover_next_step()
   deleting_unnecessary_variables()
 
   start_rollover_not_last_index(check_mode)
