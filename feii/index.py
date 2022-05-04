@@ -2,11 +2,11 @@
 
 import re
 import requests
-from feii.log import Log
+# from feii.log import Log
 from feii.config import Config
-from feii.init import Init
+# from feii.init import Init
 from feii.request import Request
-from feii.function import Function
+# from feii.function import Function
 
 class Index(Config, Request):
   def __init__(self,
@@ -39,6 +39,10 @@ class Index(Config, Request):
     prev_index_to_check: str = {},
     without_shrink_prev_index: str = '',
     new_index_name: str = '',
+    indices_to_remove_by_ilm_policy: str = [],
+    indices_with_age: str = [],
+    list_indexes_to_delete: str = [],
+    full_deleted_indexes: str = []
   ):
     super().__init__()
     self.indices = indices
@@ -70,6 +74,10 @@ class Index(Config, Request):
     self.prev_index_to_check = prev_index_to_check
     self.without_shrink_prev_index = without_shrink_prev_index
     self.new_index_name = new_index_name
+    self.indices_to_remove_by_ilm_policy = indices_to_remove_by_ilm_policy
+    self.indices_with_age = indices_with_age
+    self.list_indexes_to_delete = list_indexes_to_delete
+    self.full_deleted_indexes = full_deleted_indexes
 
   def debug_detail_index(self):
     self.alias = 'test'
@@ -120,7 +128,7 @@ class Index(Config, Request):
 
   def creating_array_not_hot_phase_index(self):
     for index in self.indices:
-      if Config.ilm_list['indices'][index['index']]['phase'] != 'hot':
+      if 'phase' in Config.ilm_list['indices'][index['index']] and Config.ilm_list['indices'][index['index']]['phase'] != 'hot':
         self.not_hot_phase_indices.append(index)
 
   def creating_array_shrink_index(self):
@@ -199,7 +207,7 @@ class Index(Config, Request):
 
   def creating_array_error_ilm_not_hot_phase_indices(self):
     for index in self.error_ilm_indices:
-      if Config.ilm_list['indices'][index['index']]['phase'] != 'hot':
+      if 'phase' in Config.ilm_list['indices'][index['index']] and Config.ilm_list['indices'][index['index']]['phase'] != 'hot':
         self.error_ilm_not_hot_phase_indices.append(index)
 
   def creating_array_delete_index(self):
@@ -228,6 +236,11 @@ class Index(Config, Request):
     for index in self.not_last_indices:
       if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout'] != self.COLD_DELAYED_TIMEOUT:
         self.timeout_not_last_indices.append(index)
+
+  def creating_array_index_to_remove_by_ilm_policy(self):
+    for index in self.not_last_indices:
+      if self.index_or_alias == index['index.alias']:
+        self.indices_to_remove_by_ilm_policy.append(index['index'])
 
   def remove_invalid_indexes_in_array(self, indexes_array: str = []):
     for index in indexes_array:
@@ -270,3 +283,44 @@ class Index(Config, Request):
     if self.status_request():
       self.logger.info("Reindexed [{0}] - True".format( self.index ))
       return True
+
+  def request_find_service_index(self):
+    self.request = requests.get("{0}/_cat/indices/{1}".format( self.ELASTIC_URL, self.SERVICE_INDEX ))
+
+  def check_request_find_service_index(self):
+    if self.status_request():
+      self.logger.info("Service index [{0}] has already been created".format( self.SERVICE_INDEX ))
+      return True
+
+  def create_service_index(self):
+    self.request = requests.put("{0}/{1}?master_timeout={2}".format( self.ELASTIC_URL, self.SERVICE_INDEX, self.MASTER_TIMEOUT))
+
+  def check_create_service_index(self):
+    if self.status_request():
+      self.logger.info("Create service index [{0}] - True".format( self.SERVICE_INDEX ))
+      return True
+
+  def creating_array_index_with_age(self):
+    indexes = requests.get("{0}/{1}/_search?format=json&filter_path=hits.hits._source,hits.hits._id".format( self.ELASTIC_URL, self.SERVICE_INDEX )).json()
+    if 'hits' in indexes:
+      for indices in indexes['hits']['hits']:
+        index_details = indices.copy()
+        index_details['_source']['policy.age'] = re.sub("[^0-9\.]", "", self.age_ilm_policies[indices['_source']['policy']]['policy.age'])
+        self.indices_with_age.append(index_details)
+
+  def update_array_index_with_age(self):
+    for indices in self.indices_with_age[:]:
+      for index in indices['_source']['indexes'][:]:
+        if not index in Config.ilm_list['indices']:
+          indices['_source']['indexes'].remove(index)
+
+      if not indices['_source']['indexes']:
+        self.full_deleted_indexes.append(self.indices_with_age[self.indices_with_age.index(indices)])
+        self.indices_with_age.pop(self.indices_with_age.index(indices))
+
+  def creating_array_index_to_expired_policy(self):
+    for indices in self.indices_with_age:
+      for index in indices['_source']['indexes']:
+        age = int(indices['_source']['policy.age'])
+        if "d" in Config.ilm_list['indices'][index]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index]['age']))) >= age:
+          self.list_indexes_to_delete.append(index)

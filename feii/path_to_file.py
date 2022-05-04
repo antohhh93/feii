@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import os
+# import os
 from configparser import ConfigParser
 from feii.config import Config
 

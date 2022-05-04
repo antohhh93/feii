@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import click
+# import click
 from feii.log import Log
 from feii.config import Config
 from feii.init import Init
@@ -35,6 +35,7 @@ def generating_variables_for_indices():
   class_config.ilm_list = class_config.index_pools[3].json()
   class_config.settings_list = class_config.index_pools[2].json()
   class_config.alias_list = class_config.index_pools[1].json()
+  class_config.ilm_policy = class_config.index_pools[5].json()
 
   class_structure.logger = class_log.logger
 
@@ -84,7 +85,7 @@ def generating_variables_for_alias():
   class_structure.creating_array_no_necessary_alias_in_index()
   class_structure.creating_array_no_shrink_alias_in_index()
 
-def generating_variables_for_alias_not_srink():
+def generating_variables_for_alias_not_shrink():
   class_structure.creating_array_unmanaged_index()
   class_structure.remove_invalid_indexes_in_array( class_structure.unmanaged_indices )
 
@@ -167,6 +168,13 @@ def generating_variables_for_write_close_indices():
 
   class_structure.remove_invalid_indexes_in_array( class_structure.indices_not_write )
   class_structure.creating_array_write_false_in_index()
+
+def generating_variables_for_update_ilm_policy():
+  class_structure.creating_array_unmanaged_index()
+  class_structure.remove_invalid_indexes_in_array( class_structure.unmanaged_indices )
+
+  class_structure.creating_array_last_index()
+  class_structure.creating_array_not_last_index()
 
 def deleting_unnecessary_variables():
   del(class_structure.invalid_size_indices)

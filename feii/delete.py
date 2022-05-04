@@ -2,15 +2,15 @@
 
 import re
 import requests
-from feii.log import Log
+# from feii.log import Log
 from feii.config import Config
-from feii.init import Init
+# from feii.init import Init
 from feii.structure import Structure
-from feii.function import Function
+# from feii.function import Function
 
 class Delete(Structure):
   def __init__(self,
-    data_are_in_index: bool = False,
+    data_are_in_index: bool = False
   ):
     super().__init__()
     self.data_are_in_index = data_are_in_index
@@ -104,3 +104,46 @@ class Delete(Structure):
   def check_count_docs_in_prev_index(self):
     if 'docs.count' in self.prev_index_to_check and self.prev_index_to_check['docs.count'] != None and int(self.prev_index_to_check['docs.count']) > 0:
       self.data_are_in_index = True
+
+  def delete_expired_policy_indices(self):
+    self.check_service_index()
+
+    self.creating_array_age_ilm_policy()
+
+    self.creating_array_index_with_age()
+    self.update_array_index_with_age()
+
+    self.creating_array_index_to_expired_policy()
+
+    self.delete_indexes_large_age()
+    self.update_array_index_with_age()
+
+    self.deleting_doc_to_service_index()
+
+  def delete_expired_policy_indices_check_mode(self):
+    self.creating_array_age_ilm_policy()
+
+    self.creating_array_index_with_age()
+    self.update_array_index_with_age()
+
+    self.creating_array_index_to_expired_policy()
+
+    for index in self.list_indexes_to_delete:
+      self.logger.warning("[check_mode] Deletion expired ilm policy index [{0}].".format( index ))
+
+  def delete_indexes_large_age(self):
+    for index in self.list_indexes_to_delete:
+      self.index = index
+      if self.not_delete_index_and_check() != False:
+        Config.ilm_list['indices'].pop(index)
+
+  def deleting_doc_to_service_index(self):
+    for deleted_document in self.full_deleted_indexes:
+      self.document_id = deleted_document['_id']
+      self.request = requests.delete("{0}/{1}/_doc/{2}?timeout={3}".format( self.ELASTIC_URL,  self.SERVICE_INDEX, self.document_id, self.MASTER_TIMEOUT ))
+      self.check_deleting_doc_to_service_index()
+
+  def check_deleting_doc_to_service_index(self):
+    if self.status_request():
+      self.logger.info("The document [{0}] has been removed from the service index [{1}]".format( self.document_id, self.SERVICE_INDEX))
+      return True

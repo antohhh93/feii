@@ -7,15 +7,15 @@ from feii.delete import Delete
 class_delete = Delete()
 class_delete.logger = class_log.logger
 
-def start_delete_last_indexes(check_mode):
+def start_delete_expired_policy_indices(check_mode):
   if not check_mode:
-    class_delete.delete_last_indexes()
+    class_delete.delete_expired_policy_indices()
 
-def start_check_mode_delete_last_indexes(check_mode):
+def start_check_mode_delete_expired_policy_indices(check_mode):
   if check_mode:
-    class_delete.delete_last_indexes_check_mode()
+    class_delete.delete_expired_policy_indices_check_mode()
 
-@click.command(short_help='Deletion of empty last indexes.')
+@click.command(short_help='Deleting expired ilm policy indexes.')
 @click.option(
   '-c', '--check-mode',
   is_flag=True,
@@ -36,10 +36,10 @@ def start_check_mode_delete_last_indexes(check_mode):
   help='path'
 )
 def cli(check_mode, log_level, path_to_file):
-  """Deletion of empty last indexes"""
+  """Deleting expired ilm policy indexes"""
 
   logging_level(log_level)
-  class_log.logger.info("Started deletion of empty last indexes")
+  class_log.logger.info("Started deleting expired ilm policy indexes")
 
   updating_variables(path_to_file)
 
@@ -47,8 +47,8 @@ def cli(check_mode, log_level, path_to_file):
   generating_variables_for_delete()
   deleting_unnecessary_variables()
 
-  start_delete_last_indexes(check_mode)
-  start_check_mode_delete_last_indexes(check_mode)
+  start_delete_expired_policy_indices(check_mode)
+  start_check_mode_delete_expired_policy_indices(check_mode)
 
 if __name__ == "__main__":
   cli()

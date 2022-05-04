@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import re
+# import re
 import requests
 from multiprocessing.dummy import Pool as ThreadPool
 from feii.config import Config

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-import requests
-from feii.config import Config
+# import requests
+# from feii.config import Config
 
 class Request:
   def __init__(self,
@@ -11,4 +11,4 @@ class Request:
     self.request = request
 
   def status_request(self):
-    return self.request.status_code == 200
+    return self.request.status_code == 200 or 201

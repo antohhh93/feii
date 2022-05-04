@@ -6,7 +6,7 @@ from feii.cli import UpdateCLI
 @click.command(
   cls=UpdateCLI,
   short_help='Update index settings.',
-  epilog="Run 'feii error COMMAND --help' for more information on a command."
+  epilog="Run 'feii update COMMAND --help' for more information on a command."
 )
 def cli():
   """Update index settings"""

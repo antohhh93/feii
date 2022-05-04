@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-import re
-import time
-import requests
-from feii.log import Log
-from feii.config import Config
-from feii.init import Init
+# import re
+# import time
+# import requests
+# from feii.log import Log
+# from feii.config import Config
+# from feii.init import Init
 from feii.index import Index
 from feii.shard import Shard
 from feii.request import Request
@@ -105,6 +105,7 @@ class Structure(Index, Shard, Ilm, Alias, Function, Cluster, Request):
   def not_delete_index_and_check(self):
     if not self.delete_index_and_check():
       self.logger.error("Failed delete index [{0}]".format( self.index ))
+      return False
 
   def create_new_index_and_check(self):
     self.find_next_index()
@@ -122,3 +123,10 @@ class Structure(Index, Shard, Ilm, Alias, Function, Cluster, Request):
     self.cluster_status()
     self.request_add_alias_for_index()
     return self.check_add_alias_for_index()
+
+  def check_service_index(self):
+    self.request_find_service_index()
+
+    if not self.check_request_find_service_index():
+      self.create_service_index()
+      self.check_create_service_index()

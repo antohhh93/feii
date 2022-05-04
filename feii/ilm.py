@@ -1,18 +1,20 @@
 #!/usr/bin/python3
 
-import re
+# import re
 import requests
-from feii.log import Log
+# from feii.log import Log
 from feii.config import Config
 from feii.request import Request
-from feii.function import Function
+# from feii.function import Function
 
 class Ilm(Config, Request):
   def __init__(self,
-    ilm_info_for_index: str = {}
+    ilm_info_for_index: str = {},
+    age_ilm_policies: str = {}
   ):
     super().__init__()
     self.ilm_info_for_index = ilm_info_for_index
+    self.age_ilm_policies = age_ilm_policies
 
   def debug_detail_index(self):
     self.alias = 'test'
@@ -72,3 +74,25 @@ class Ilm(Config, Request):
     if self.status_request():
       self.logger.info("Remove cluster block for index [{0}] - True".format( self.index ))
       return True
+
+  def remove_ilm_policy(self):
+    self.request = requests.post("{0}/{1}/_ilm/remove?master_timeout={2}".format( self.ELASTIC_URL, self.index, self.MASTER_TIMEOUT ))
+
+  def check_remove_ilm_policy(self):
+    if self.status_request():
+      self.logger.info("Removing the ilm policy - True")
+      return True
+
+  def adding_new_ilm_policy(self):
+    data = { "index.lifecycle.name": self.policy }
+    self.request = requests.put("{0}/{1}/_settings?master_timeout={2}".format( self.ELASTIC_URL, self.index, self.MASTER_TIMEOUT ), json=data )
+
+  def check_adding_new_ilm_policy(self):
+    if self.status_request():
+      self.logger.info("New ilm policy [{0}] added to index [{1}]".format( self.policy, self.index ))
+      return True
+
+  def creating_array_age_ilm_policy(self):
+    for policy in Config.ilm_policy:
+      if 'delete' in Config.ilm_policy[policy]['policy']['phases']:
+        self.age_ilm_policies[policy] = { "policy.age": Config.ilm_policy[policy]['policy']['phases']['delete']['min_age'] }

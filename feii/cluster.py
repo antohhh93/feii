@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import requests
-from feii.log import Log
+# from feii.log import Log
 from feii.config import Config
 from feii.request import Request
 

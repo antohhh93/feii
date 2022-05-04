@@ -36,7 +36,7 @@ def start_check_mode_fix_error_ilm_all(check_mode):
   help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
 )
 @click.option(
-  '-p', '--path_to_file',
+  '-P', '--path-to-file',
   default='',
   expose_value=True,
   help='path'

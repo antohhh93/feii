@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import click
-from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_alias, generating_variables_for_alias_not_srink, deleting_unnecessary_variables
+from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_alias, generating_variables_for_alias_not_shrink, deleting_unnecessary_variables
 from feii.aliases import Aliases
 
 class_aliases = Aliases()
@@ -36,7 +36,7 @@ def start_check_mode_add_necessary_alias_for_indices(check_mode):
   help='Indexes only, no shrink.'
 )
 @click.option(
-  '-p', '--path_to_file',
+  '-P', '--path-to-file',
   default='',
   expose_value=True,
   help='path'
@@ -51,7 +51,7 @@ def cli(check_mode, log_level, not_shrink, path_to_file):
 
   generating_variables_for_indices()
   if not_shrink:
-    generating_variables_for_alias_not_srink()
+    generating_variables_for_alias_not_shrink()
   else:
     generating_variables_for_alias()
   deleting_unnecessary_variables()

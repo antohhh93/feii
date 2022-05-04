@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys
+# import sys
 import logging
 from os import path, remove
 

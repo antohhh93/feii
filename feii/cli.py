@@ -10,6 +10,7 @@ error_folder = os.path.join(os.path.dirname(__file__), 'commands/error')
 delete_folder = os.path.join(os.path.dirname(__file__), 'commands/delete')
 update_folder = os.path.join(os.path.dirname(__file__), 'commands/update')
 write_folder = os.path.join(os.path.dirname(__file__), 'commands/write')
+policy_folder = os.path.join(os.path.dirname(__file__), 'commands/policy')
 
 class AllCLI(click.MultiCommand):
   def list_commands(self, ctx):
@@ -123,6 +124,22 @@ class WriteCLI(click.MultiCommand):
       return
     return mod.cli
 
+class PolicyCLI(click.MultiCommand):
+  def list_commands(self, ctx):
+    rv = []
+    for filename in os.listdir(policy_folder):
+      if filename.endswith('.py') and filename.startswith("cmd_"):
+        rv.append(filename[4:-3])
+    rv.sort()
+    return rv
+
+  def get_command(self, ctx, name):
+    try:
+      mod = __import__(f"feii.commands.policy.cmd_{name}", None, None, ["cli"])
+    except ImportError:
+      return
+    return mod.cli
+
 @click.command(cls=AllCLI, epilog="Run 'feii COMMAND --help' for more information on a command.")
 @click.version_option()
 def cli():
@@ -135,6 +152,7 @@ def cli():
     * adding alias in indexes
     * applying parameters
     * fix write in indices
+    * update policy
   """
 
 if __name__ == '__main__':

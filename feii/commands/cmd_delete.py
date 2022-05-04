@@ -6,7 +6,7 @@ from feii.cli import DeleteCLI
 @click.command(
   cls=DeleteCLI,
   short_help='Deletion of empty indexes.',
-  epilog="Run 'feii error COMMAND --help' for more information on a command."
+  epilog="Run 'feii delete COMMAND --help' for more information on a command."
 )
 def cli():
   """Deletion of empty indexes"""

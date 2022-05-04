@@ -30,7 +30,7 @@ def start_check_mode_next_step_for_not_last_index(check_mode):
   help='Set the logging level ("debug"|"info"|"warning"|"error"|"critical")'
 )
 @click.option(
-  '-p', '--path_to_file',
+  '-P', '--path-to-file',
   default='',
   expose_value=True,
   help='path'
