@@ -55,7 +55,8 @@ class Delete(Structure):
 
       if not self.data_are_in_index:
         self.index = delete_index['index']
-        self.not_delete_index_and_check()
+        self.creating_array_current_index()
+        self.delete_current_indexes()
 
   def delete_last_indexes_check_mode(self):
     for delete_index in self.delete_last_indices:
@@ -73,10 +74,14 @@ class Delete(Structure):
       if not self.data_are_in_index:
         self.logger.warning("[check_mode] Deletion an empty last index [{0}], documents count - {1}".format( delete_index['index'], delete_index['docs.count'] ))
 
-  def check_prev_indices(self):
-    for x in range(3):
-      self.prev_index_to_check = {}
+  def delete_current_indexes(self):
+    for index in self.current_indices[:]:
+      self.index = index
+      if not self.not_delete_index_and_check():
+        self.current_indices.remove(index)
 
+  def check_prev_indices(self):
+    for x in range(int(self.index[-6:]) - 1):
       self.find_prev_index()
       self.without_shrink_prev_index = re.sub(r'(shrink-)', '', self.prev_index)
 

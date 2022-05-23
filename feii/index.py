@@ -42,7 +42,8 @@ class Index(Config, Request):
     indices_to_remove_by_ilm_policy: str = [],
     indices_with_age: str = [],
     list_indexes_to_delete: str = [],
-    full_deleted_indexes: str = []
+    full_deleted_indexes: str = [],
+    current_indices: str = []
   ):
     super().__init__()
     self.indices = indices
@@ -78,6 +79,7 @@ class Index(Config, Request):
     self.indices_with_age = indices_with_age
     self.list_indexes_to_delete = list_indexes_to_delete
     self.full_deleted_indexes = full_deleted_indexes
+    self.current_indices = current_indices
 
   def debug_detail_index(self):
     self.alias = 'test'
@@ -236,6 +238,11 @@ class Index(Config, Request):
     for index in self.not_last_indices:
       if not 'unassigned' in Config.settings_list[index['index']]['settings']['index'] or Config.settings_list[index['index']]['settings']['index']['unassigned']['node_left']['delayed_timeout'] != self.COLD_DELAYED_TIMEOUT:
         self.timeout_not_last_indices.append(index)
+
+  def creating_array_current_index(self):
+    for index in self.indices:
+      if re.sub(r'(shrink-)', '', self.index[:-7]) == re.sub(r'(shrink-)', '', index['index'][:-7]):
+        self.current_indices.append(index['index'])
 
   def creating_array_index_to_remove_by_ilm_policy(self):
     for index in self.not_last_indices:
