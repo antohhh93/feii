@@ -212,7 +212,7 @@ class Index(Config, Request):
       if 'phase' in Config.ilm_list['indices'][index['index']] and Config.ilm_list['indices'][index['index']]['phase'] != 'hot':
         self.error_ilm_not_hot_phase_indices.append(index)
 
-  def creating_array_delete_index(self): #номер должен быть выше 3
+  def creating_array_delete_index(self):
     for index in self.last_indices:
       if int(self.index_pattern.match(index['index']).group(3)) > 3:
         self.delete_last_indices.append(index)
