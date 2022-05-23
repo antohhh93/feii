@@ -210,7 +210,7 @@ class Index(Config, Request):
       if 'phase' in Config.ilm_list['indices'][index['index']] and Config.ilm_list['indices'][index['index']]['phase'] != 'hot':
         self.error_ilm_not_hot_phase_indices.append(index)
 
-  def creating_array_delete_index(self):
+  def creating_array_delete_index(self): #номер должен быть выше 3
     for index in self.last_indices:
       if int(self.index_pattern.match(index['index']).group(3)) > 3:
         self.delete_last_indices.append(index)
@@ -309,14 +309,10 @@ class Index(Config, Request):
         self.indices_with_age.append(index_details)
 
   def update_array_index_with_age(self):
-    for indices in self.indices_with_age[:]:
-      for index in indices['_source']['indexes'][:]:
+    for document in self.indices_with_age[:]:
+      for index in document['_source']['indexes'][:]:
         if not index in Config.ilm_list['indices']:
-          indices['_source']['indexes'].remove(index)
-
-      if not indices['_source']['indexes']:
-        self.full_deleted_indexes.append(self.indices_with_age[self.indices_with_age.index(indices)])
-        self.indices_with_age.pop(self.indices_with_age.index(indices))
+          document['_source']['indexes'].remove(index)
 
   def creating_array_index_to_expired_policy(self):
     for indices in self.indices_with_age:
@@ -324,3 +320,21 @@ class Index(Config, Request):
         age = int(indices['_source']['policy.age'])
         if "d" in Config.ilm_list['indices'][index]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index]['age']))) >= age:
           self.list_indexes_to_delete.append(index)
+
+  def update_doc_to_service_index(self):
+    for document in self.indices_with_age[:]:
+      self.document_id = document['_id']
+      document['_source'].pop('policy.age')
+      data = document['_source']
+      self.request = requests.post("{0}/{1}/_doc/{2}?timeout={3}".format( self.ELASTIC_URL,  self.SERVICE_INDEX, self.document_id, self.MASTER_TIMEOUT ), json=data)
+      self.check_update_doc_to_service_index()
+
+  def check_update_doc_to_service_index(self):
+    if self.status_request():
+      self.logger.info("Document [{0}] has been updated in the service index [{1}]".format( self.document_id, self.SERVICE_INDEX))
+      return True
+
+  def checking_for_empty_doc_to_service_index(self):
+    for document in self.indices_with_age[:]:
+      if not document['_source']['indexes']:
+        self.full_deleted_indexes.append(document)

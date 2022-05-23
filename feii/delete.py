@@ -118,6 +118,9 @@ class Delete(Structure):
     self.delete_indexes_large_age()
     self.update_array_index_with_age()
 
+    self.update_doc_to_service_index()
+
+    self.checking_for_empty_doc_to_service_index()
     self.deleting_doc_to_service_index()
 
   def delete_expired_policy_indices_check_mode(self):
