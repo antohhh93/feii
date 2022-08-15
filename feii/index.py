@@ -2,11 +2,8 @@
 
 import re
 import requests
-# from feii.log import Log
 from feii.config import Config
-# from feii.init import Init
 from feii.request import Request
-# from feii.function import Function
 
 class Index(Config, Request):
   def __init__(self,
@@ -281,6 +278,14 @@ class Index(Config, Request):
   def check_delete_index(self):
     if self.status_request():
       self.logger.info("Deleting index [{0}] - True".format( self.index ))
+      return True
+
+  def close_index(self):
+    self.request = requests.post("{0}/{1}/_close".format( self.ELASTIC_URL, self.index ))
+
+  def check_close_index(self):
+    if self.status_request():
+      self.logger.info("Close index [{0}] - True".format( self.index ))
       return True
 
   def reindexed(self):

@@ -1,9 +1,6 @@
 #!/usr/bin/python3
 
 import re
-# from feii.log import Log
-# from feii.config import Config
-# from feii.init import Init
 from feii.structure import Structure
 
 class Aliases(Structure):

@@ -1,8 +1,5 @@
 #!/usr/bin/python3
 
-# from feii.log import Log
-# from feii.config import Config
-# from feii.init import Init
 from feii.structure import Structure
 
 class Rollover(Structure):

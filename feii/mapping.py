@@ -1,12 +1,7 @@
 #!/usr/bin/python3
 
-# import re
 import requests
-# from feii.log import Log
-# from feii.config import Config
-# from feii.init import Init
 from feii.structure import Structure
-# from feii.function import Function
 
 class Mapping(Structure):
   def check_dock_count_indexes(self):

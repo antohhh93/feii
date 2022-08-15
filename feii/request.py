@@ -1,8 +1,5 @@
 #!/usr/bin/python3
 
-# import requests
-# from feii.config import Config
-
 class Request:
   def __init__(self,
     request: str = '',

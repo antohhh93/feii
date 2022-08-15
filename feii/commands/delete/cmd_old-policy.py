@@ -3,17 +3,25 @@
 import click
 from feii.main import class_structure, class_log, logging_level, updating_variables, generating_variables_for_indices, generating_variables_for_delete, deleting_unnecessary_variables
 from feii.delete import Delete
+from feii.close import Close
 
 class_delete = Delete()
 class_delete.logger = class_log.logger
 
-def start_delete_expired_policy_indices(check_mode):
-  if not check_mode:
-    class_delete.delete_expired_policy_indices()
+class_close = Close()
+class_close.logger = class_log.logger
 
-def start_check_mode_delete_expired_policy_indices(check_mode):
-  if check_mode:
+def start_delete_expired_policy_indices(check_mode, close):
+  if not check_mode and not close:
+    class_delete.delete_expired_policy_indices()
+  if not check_mode and close:
+    class_close.close_expired_policy_indices()
+
+def start_check_mode_delete_expired_policy_indices(check_mode, close):
+  if check_mode and not close:
     class_delete.delete_expired_policy_indices_check_mode()
+  if check_mode and close:
+    class_close.close_expired_policy_indices_check_mode()
 
 @click.command(short_help='Deleting expired ilm policy indexes.')
 @click.option(
@@ -35,7 +43,13 @@ def start_check_mode_delete_expired_policy_indices(check_mode):
   expose_value=True,
   help='path'
 )
-def cli(check_mode, log_level, path_to_file):
+@click.option(
+  '--close',
+  is_flag=True,
+  expose_value=True,
+  help='Allows you to close the index without deleting'
+)
+def cli(check_mode, close, log_level, path_to_file):
   """Deleting expired ilm policy indexes"""
 
   logging_level(log_level)
@@ -47,8 +61,8 @@ def cli(check_mode, log_level, path_to_file):
   generating_variables_for_delete()
   deleting_unnecessary_variables()
 
-  start_delete_expired_policy_indices(check_mode)
-  start_check_mode_delete_expired_policy_indices(check_mode)
+  start_delete_expired_policy_indices(check_mode, close)
+  start_check_mode_delete_expired_policy_indices(check_mode, close)
 
 if __name__ == "__main__":
   cli()

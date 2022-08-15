@@ -1,12 +1,8 @@
 #!/usr/bin/python3
 
-import re
 import requests
-# from feii.log import Log
 from feii.config import Config
-# from feii.init import Init
 from feii.request import Request
-# from feii.function import Function
 
 class Alias(Config, Request):
   def __init__(self,

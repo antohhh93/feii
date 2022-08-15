@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-# import click
 from feii.log import Log
 from feii.config import Config
 from feii.init import Init

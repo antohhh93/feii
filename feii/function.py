@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
-# import re
 import time
-# from feii.log import Log
 
 class Function:
   def __init__(self,
