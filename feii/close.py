@@ -9,7 +9,7 @@ class Close(Structure):
     self.index_docs_count = 0
 
   def close_expired_policy_indices(self):
-    self.check_service_index()
+    self.check_service_index(service_index_name = self.SERVICE_INDEX_EXCEPTION)
 
     self.creating_array_age_ilm_policy()
 

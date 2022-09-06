@@ -35,8 +35,8 @@ class Policy(Structure):
     self.check_adding_new_ilm_policy()
 
     self.creating_array_index_to_remove_by_ilm_policy()
-    self.writing_to_service_index()
-    self.check_writing_to_service_index()
+    self.writing_to_service_index(self.indices_to_remove_by_ilm_policy, self.SERVICE_INDEX, indexes = self.indices_to_remove_by_ilm_policy, policy = self.policy)
+    self.check_writing_to_service_index(self.indices_to_remove_by_ilm_policy, self.SERVICE_INDEX)
 
   def update_ilm_policy_check_mode(self, set_index: str = '', set_alias: str = '', set_policy: str = ''):
     self.index = set_index
@@ -73,12 +73,17 @@ class Policy(Structure):
       if self.index_or_alias == index['index.alias']:
         self.index = index['index']
 
-  def writing_to_service_index(self):
-    if self.indices_to_remove_by_ilm_policy:
-      data = { "indexes": self.indices_to_remove_by_ilm_policy, "policy": self.policy }
-      self.request = requests.post("{0}/{1}/_doc/?timeout={2}".format( self.ELASTIC_URL,  self.SERVICE_INDEX, self.MASTER_TIMEOUT ), json=data )
+  def add_exception_ilm_policy(self, set_alias: str = ''):
+    self.check_service_index(service_index_name = self.SERVICE_INDEX_EXCEPTION)
 
-  def check_writing_to_service_index(self):
-    if self.indices_to_remove_by_ilm_policy and self.status_request():
-      self.logger.info("The array of indexes is written to the service index [{0}]".format( self.SERVICE_INDEX))
+    self.writing_to_service_index(set_alias, self.SERVICE_INDEX_EXCEPTION, aliases = set_alias)
+    self.check_writing_to_service_index(set_alias, self.SERVICE_INDEX_EXCEPTION)
+
+  def writing_to_service_index(self, check=False, service_index_name=None, **kwargs):
+    if check and service_index_name:
+      self.request = requests.post("{0}/{1}/_doc/?timeout={2}".format( self.ELASTIC_URL, service_index_name, self.MASTER_TIMEOUT ), json=kwargs ) if kwargs else False
+
+  def check_writing_to_service_index(self, check=False, service_index_name=None):
+    if check and service_index_name and self.request and self.status_request():
+      self.logger.info("The data is written to the service index [{0}]".format( service_index_name ))
       return True

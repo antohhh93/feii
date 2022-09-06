@@ -115,6 +115,7 @@ class Delete(Structure):
     self.creating_array_index_with_age()
     self.update_array_index_with_age()
 
+    self.creating_array_index_exception()
     self.creating_array_index_to_expired_policy()
 
     self.delete_indexes_large_age()
@@ -131,6 +132,7 @@ class Delete(Structure):
     self.creating_array_index_with_age()
     self.update_array_index_with_age()
 
+    self.creating_array_index_exception()
     self.creating_array_index_to_expired_policy()
 
     for index in self.list_indexes_to_delete:

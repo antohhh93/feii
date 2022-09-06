@@ -16,6 +16,7 @@ class Config:
     HOT_DELAYED_TIMEOUT: str = '10m',
     COLD_DELAYED_TIMEOUT: str = '25m',
     SERVICE_INDEX: str = '.feii_ilm',
+    SERVICE_INDEX_EXCEPTION: str = '.feii_ilm_exception',
     index_pattern: str = re.compile(r'^(shrink-)?(.+)-(\d{6})$'),
     index_pools: str = '',
     alias_list: str = '',
@@ -39,6 +40,7 @@ class Config:
     self.HOT_DELAYED_TIMEOUT = HOT_DELAYED_TIMEOUT
     self.COLD_DELAYED_TIMEOUT = COLD_DELAYED_TIMEOUT
     self.SERVICE_INDEX = SERVICE_INDEX
+    self.SERVICE_INDEX_EXCEPTION = SERVICE_INDEX_EXCEPTION
     self.index_pattern = index_pattern
     self.index_pools = index_pools
     self.alias_list = alias_list

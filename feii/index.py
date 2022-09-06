@@ -38,6 +38,7 @@ class Index(Config, Request):
     new_index_name: str = '',
     indices_to_remove_by_ilm_policy: str = [],
     indices_with_age: str = [],
+    indices_exception: str = [],
     list_indexes_to_delete: str = [],
     full_deleted_indexes: str = [],
     current_indices: str = []
@@ -74,6 +75,7 @@ class Index(Config, Request):
     self.new_index_name = new_index_name
     self.indices_to_remove_by_ilm_policy = indices_to_remove_by_ilm_policy
     self.indices_with_age = indices_with_age
+    self.indices_exception = indices_exception
     self.list_indexes_to_delete = list_indexes_to_delete
     self.full_deleted_indexes = full_deleted_indexes
     self.current_indices = current_indices
@@ -296,21 +298,27 @@ class Index(Config, Request):
       self.logger.info("Reindexed [{0}] - True".format( self.index ))
       return True
 
-  def request_find_service_index(self):
-    self.request = requests.get("{0}/_cat/indices/{1}".format( self.ELASTIC_URL, self.SERVICE_INDEX ))
+  def request_find_service_index(self, service_index_name):
+    self.request = requests.get("{0}/_cat/indices/{1}".format( self.ELASTIC_URL, service_index_name ))
 
-  def check_request_find_service_index(self):
+  def check_request_find_service_index(self, service_index_name):
     if self.status_request():
-      self.logger.info("Service index [{0}] has already been created".format( self.SERVICE_INDEX ))
+      self.logger.info("Service index [{0}] has already been created".format( service_index_name ))
       return True
 
-  def create_service_index(self):
-    self.request = requests.put("{0}/{1}?master_timeout={2}".format( self.ELASTIC_URL, self.SERVICE_INDEX, self.MASTER_TIMEOUT))
+  def create_service_index(self, service_index_name):
+    self.request = requests.put("{0}/{1}?master_timeout={2}".format( self.ELASTIC_URL, service_index_name, self.MASTER_TIMEOUT))
 
-  def check_create_service_index(self):
+  def check_create_service_index(self, service_index_name):
     if self.status_request():
-      self.logger.info("Create service index [{0}] - True".format( self.SERVICE_INDEX ))
+      self.logger.info("Create service index [{0}] - True".format( service_index_name ))
       return True
+
+  def creating_array_index_exception(self):
+    indexes = requests.get("{0}/{1}/_search?format=json&filter_path=hits.hits._source,hits.hits._id".format( self.ELASTIC_URL, self.SERVICE_INDEX_EXCEPTION )).json()
+    if 'hits' in indexes:
+      for indices in indexes['hits']['hits']:
+        self.indices_exception.append(indices['_source']['aliases'])
 
   def creating_array_index_with_age(self):
     indexes = requests.get("{0}/{1}/_search?format=json&filter_path=hits.hits._source,hits.hits._id".format( self.ELASTIC_URL, self.SERVICE_INDEX )).json()
@@ -330,7 +338,8 @@ class Index(Config, Request):
     for indices in self.indices_with_age:
       for index in indices['_source']['indexes']:
         age = int(indices['_source']['policy.age'])
-        if "d" in Config.ilm_list['indices'][index]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index]['age']))) >= age:
+        alias = self.index_pattern.match(index).group(2)
+        if "d" in Config.ilm_list['indices'][index]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index]['age']))) >= age and alias not in self.indices_exception:
           self.list_indexes_to_delete.append(index)
 
   def update_doc_to_service_index(self):

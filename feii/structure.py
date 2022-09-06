@@ -127,9 +127,9 @@ class Structure(Index, Shard, Ilm, Alias, Function, Cluster, Request):
     self.request_add_alias_for_index()
     return self.check_add_alias_for_index()
 
-  def check_service_index(self):
-    self.request_find_service_index()
+  def check_service_index(self, **kwargs):
+    self.request_find_service_index( kwargs.get('service_index_name', self.SERVICE_INDEX) )
 
-    if not self.check_request_find_service_index():
-      self.create_service_index()
-      self.check_create_service_index()
+    if not self.check_request_find_service_index( kwargs.get('service_index_name', self.SERVICE_INDEX) ):
+      self.create_service_index( kwargs.get('service_index_name', self.SERVICE_INDEX) )
+      self.check_create_service_index( kwargs.get('service_index_name', self.SERVICE_INDEX) )
