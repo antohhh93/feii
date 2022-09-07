@@ -46,6 +46,7 @@ class Structure(Index, Shard, Ilm, Alias, Function, Cluster, Request):
     return self.check_delete_index()
 
   def close_index_and_check(self):
+    self.cluster_status()
     self.close_index()
     return self.check_close_index()
 

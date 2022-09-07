@@ -15,7 +15,7 @@ def start_check_mode_close_expired_policy_indices(check_mode):
   if check_mode:
     class_close.close_expired_policy_indices_check_mode()
 
-@click.command(short_help='Deleting expired ilm policy indexes.')
+@click.command(short_help='Close expired ilm policy indexes.')
 @click.option(
   '-c', '--check-mode',
   is_flag=True,
@@ -36,10 +36,10 @@ def start_check_mode_close_expired_policy_indices(check_mode):
   help='path'
 )
 def cli(check_mode, log_level, path_to_file):
-  """Deleting expired ilm policy indexes"""
+  """Close expired ilm policy indexes"""
 
   logging_level(log_level)
-  class_log.logger.info("Started deleting expired ilm policy indexes")
+  class_log.logger.info("Started close expired ilm policy indexes")
 
   updating_variables(path_to_file)
 

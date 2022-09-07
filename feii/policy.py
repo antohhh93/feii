@@ -34,7 +34,7 @@ class Policy(Structure):
     self.adding_new_ilm_policy()
     self.check_adding_new_ilm_policy()
 
-    self.creating_array_index_to_remove_by_ilm_policy()
+    self.creating_array_indexes_to_remove_by_ilm_policy()
     self.writing_to_service_index(self.indices_to_remove_by_ilm_policy, self.SERVICE_INDEX, indexes = self.indices_to_remove_by_ilm_policy, policy = self.policy)
     self.check_writing_to_service_index(self.indices_to_remove_by_ilm_policy, self.SERVICE_INDEX)
 

@@ -39,7 +39,10 @@ class Index(Config, Request):
     indices_to_remove_by_ilm_policy: str = [],
     indices_with_age: str = [],
     indices_exception: str = [],
-    list_indexes_to_delete: str = [],
+    list_indices_to_delete: str = [],
+    last_indices_with_age: str = [],
+    list_indices_to_close: str = [],
+    indices_with_age_to_close: str = [],
     full_deleted_indexes: str = [],
     current_indices: str = []
   ):
@@ -76,7 +79,10 @@ class Index(Config, Request):
     self.indices_to_remove_by_ilm_policy = indices_to_remove_by_ilm_policy
     self.indices_with_age = indices_with_age
     self.indices_exception = indices_exception
-    self.list_indexes_to_delete = list_indexes_to_delete
+    self.list_indices_to_delete = list_indices_to_delete
+    self.last_indices_with_age = last_indices_with_age
+    self.list_indices_to_close = list_indices_to_close
+    self.indices_with_age_to_close = indices_with_age_to_close
     self.full_deleted_indexes = full_deleted_indexes
     self.current_indices = current_indices
 
@@ -243,7 +249,7 @@ class Index(Config, Request):
       if re.sub(r'(shrink-)', '', self.index[:-7]) == re.sub(r'(shrink-)', '', index['index'][:-7]):
         self.current_indices.append(index['index'])
 
-  def creating_array_index_to_remove_by_ilm_policy(self):
+  def creating_array_indexes_to_remove_by_ilm_policy(self):
     for index in self.not_last_indices:
       if self.index_or_alias == index['index.alias']:
         self.indices_to_remove_by_ilm_policy.append(index['index'])
@@ -314,13 +320,13 @@ class Index(Config, Request):
       self.logger.info("Create service index [{0}] - True".format( service_index_name ))
       return True
 
-  def creating_array_index_exception(self):
+  def creating_array_indexes_exception(self):
     indexes = requests.get("{0}/{1}/_search?format=json&filter_path=hits.hits._source,hits.hits._id".format( self.ELASTIC_URL, self.SERVICE_INDEX_EXCEPTION )).json()
     if 'hits' in indexes:
       for indices in indexes['hits']['hits']:
         self.indices_exception.append(indices['_source']['aliases'])
 
-  def creating_array_index_with_age(self):
+  def creating_array_indexes_with_age(self):
     indexes = requests.get("{0}/{1}/_search?format=json&filter_path=hits.hits._source,hits.hits._id".format( self.ELASTIC_URL, self.SERVICE_INDEX )).json()
     if 'hits' in indexes:
       for indices in indexes['hits']['hits']:
@@ -328,19 +334,19 @@ class Index(Config, Request):
         index_details['_source']['policy.age'] = re.sub("[^0-9\.]", "", self.age_ilm_policies[indices['_source']['policy']]['policy.age'])
         self.indices_with_age.append(index_details)
 
-  def update_array_index_with_age(self):
+  def update_array_indexes_with_age(self):
     for document in self.indices_with_age[:]:
       for index in document['_source']['indexes'][:]:
         if not index in Config.ilm_list['indices']:
           document['_source']['indexes'].remove(index)
 
-  def creating_array_index_to_expired_policy(self):
+  def creating_array_indexes_to_expired_policy_for_delete(self):
     for indices in self.indices_with_age:
       for index in indices['_source']['indexes']:
         age = int(indices['_source']['policy.age'])
         alias = self.index_pattern.match(index).group(2)
         if "d" in Config.ilm_list['indices'][index]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index]['age']))) >= age and alias not in self.indices_exception:
-          self.list_indexes_to_delete.append(index)
+          self.list_indices_to_delete.append(index)
 
   def update_doc_to_service_index(self):
     for document in self.indices_with_age[:]:
@@ -359,3 +365,24 @@ class Index(Config, Request):
     for document in self.indices_with_age[:]:
       if not document['_source']['indexes']:
         self.full_deleted_indexes.append(document)
+
+  def creating_array_indexes_with_policy_age(self):
+    for index in self.last_indices:
+      index_details = index.copy()
+      index_details['policy'] = Config.ilm_list['indices'][index['index']]['policy']
+      index_details['policy.age'] = re.sub("[^0-9\.]", "", self.age_ilm_policies[index_details['policy']]['policy.age'])
+      self.last_indices_with_age.append(index_details)
+
+  def creating_array_indexes_with_policy_age_to_close(self):
+    for index in self.not_last_indices:
+      for index_age in self.last_indices_with_age:
+        if index_age['index.alias'] == index['index.alias']:
+          index_details = index.copy()
+          index_details['policy.age'] = index_age['policy.age']
+          self.indices_with_age_to_close.append(index_details)
+
+  def creating_array_indexes_expired_policy_to_close(self):
+    for index in self.indices_with_age_to_close:
+      age = int(index['policy.age'])
+      if "d" in Config.ilm_list['indices'][index['index']]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index['index']]['age']))) >= age and index['index.alias'] not in self.indices_exception:
+        self.list_indices_to_close.append(index)
