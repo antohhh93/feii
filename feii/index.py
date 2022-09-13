@@ -384,5 +384,5 @@ class Index(Config, Request):
   def creating_array_indexes_expired_policy_to_close(self):
     for index in self.indices_with_age_to_close:
       age = int(index['policy.age'])
-      if "d" in Config.ilm_list['indices'][index['index']]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index['index']]['age']))) >= age and index['index.alias'] not in self.indices_exception:
+      if "d" in Config.ilm_list['indices'][index['index']]['age'] and int(float(re.sub("[^0-9\.]", "", Config.ilm_list['indices'][index['index']]['age']))) > age and index['index.alias'] not in self.indices_exception:
         self.list_indices_to_close.append(index)
